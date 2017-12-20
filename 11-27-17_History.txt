@@ -1,0 +1,52 @@
+ep = 1;
+tt = 8;
+fs = eeg{d}{ep}{tt}.samprate;
+[b,a] = butter(10,200/(fs/2));
+ef = filtfilt(b,a,e);
+e = eeg{d}{ep}{t}.data;
+e = eeg{d}{ep}{tt}.data;
+ef = filtfilt(b,a,e);
+e = e';
+ef = ef';
+maxTrace = 30*60;
+e = e(1:maxTrace*fs);
+ef = ef(1:maxTrace*fs);
+t = t(1:maxTrace*fs);
+stftWin = 5;
+cwtWin = 60;
+cwtOverlap = 10;
+help mtspexgramc
+help mtspecgrampt
+stftsStep = 2.5;
+stftFpass = [0 80];
+stftTapers = [3 4];
+params = struct('Fs',fs,'movingwin',[stftWin stftStep],'fpass',stftFpass,'tapers',stftTapers);
+stftStep  = 2.5;
+params = struct('Fs',fs,'movingwin',[stftWin stftStep],'fpass',stftFpass,'tapers',stftTapers);
+[Spec,freq] = mtspecgramc(ef,[stftWin stftStep],params);
+params = struct('Fs',fs,'err',[2 0.05],'fpass',stftFpass,'tapers',stftTapers);
+[specS,specT,specF,specErr] = mtspecgramc(ef,[stftWin stftStep],params);
+plot_matrix(specS,specT,specF,'n',specErr)
+plot_matrix(specS,specT,specF,'n')
+specT = specT+t(1);
+plot_matrix(specS,specT,specF,'n')
+help zscore
+zS = zscore(specS);
+plot_matrix(zS,specT,specF,'n')
+specT(1)
+t(1)
+specF(specF<5)
+deltaFidx = find(specF>0.5 & specF<5);
+specDelta = specS(:,deltaFidx);
+help plot
+plot(specT,specDelta)
+xlim([600 610])
+DD = mean(specDelta,2);
+plot(specT,DD)
+stDD = std(specDelta,2);
+help std
+stDD = std(specDelta,0,2);
+help shadedErrorPlot
+shadedErrorPlot(specT,DD,stDD)
+xlim([600 610])
+xlim([600 680])

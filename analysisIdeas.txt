@@ -1,0 +1,81 @@
+Idea #1: For 1 tetrode, average spectrogram over all days aligned to start of injection epoch (only for saline-ketamine analysis)
+
+Idea #2: Find immobile wake periods longer than 10sec, less than 40sec and
+    following at least 10sec of persistent movement. Then for 1 tetrode average
+    over periods 5sec before and after immobility start. 
+
+Idea #3: Plot FFT spectrum for entire epochs. AND/OR Limit to first 10 min of each epoch (due to transient effect of ketamine) 
+
+Idea #4: For each tetrode, get spectrum for each epoch type using chronux and every day as a trial. 
+        Issue: Even a single tetrode moves over several days, mean delta power is different on different days
+
+Idea #5: Current Source Density Analysis. Spectral Factorization-CSD (Chand & Dhamala 2014)
+
+Idea #6: Normalized to high frequency.
+
+Idea #7: ICA whiten spectrogram then normalize to high freq band. 
+
+Idea #8: Normalize EEG before making spectrogram
+
+Idea #9: Make spectrum and delta trace with hilbert transform. 
+
+CSD: 
+    Base Assumptions:
+        1) Ohmic COnductive medium 
+        2) constant extracellular conductivity
+        3) homogenous in-plane neuronal activity
+        4) equidistance laminar electrode contacts 
+    * Need to estimate electrode positions (in 3D) at recording time & look up CSD for non-laminar electrodes
+
+
+TODO:
+    - #3/#4
+    - #9
+    - #8
+    - #2
+
+
+Meeting with Don
+use a within tetrode measure:
+    - Look at difference in delta power across states: sleep -> awake-resting -> awake-moving & compare differences across animals
+    - Also get change in delta with ketamine
+    - Also get change in total movement 
+Apply all analyses to R3 set too
+
+So for every tetrode:
+    - identify beahvioral states in all epochs & ripple times
+    - record spectrum from [0 200], interpolate to resample points -- averaged over 10 sec sliding window?? -- remove all ripple times? 
+    * Plot average spectrogram for each behavioral state for each tet
+        - individual and maybe one figure per tetrode with a column for each state (randomly sample from all states so don't plot all instances) 
+    * For each tetrode make a fig with a panel for each states and plots all spectra and mean spectrum on one plot
+    * Plot difference spectra between states
+    * Plot (for sleep epoch) foldchange in delta band, foldchange in theta band
+    * For each day plot histogram of state durations and velocities
+
+Change in delta from moving to immobile, change in delta from sleep to immobile, same with theta (% 
+
+FUNCTIONS TO WRITE:
+    - create rntask struct -- add to preprocess
+    - getBehavioralStates -- make mat [start end state] w/ -1 = sleep, 0 = awake resting & 1 = awake moving
+
+##############################################################
+##############################################################
+
+TODO:
+    - Validate & improve sleep separation
+        * unsupervised algorithm to compare mean episode spectra for immobile periods and separate into 2 groups
+          then check episode durations. 
+        -> Then vary velocity threshold and compare which thresh provides the best separation
+        -> OR see which velocity thresh allows a 40sec duration threshold separation to best match spectra separation (could also vary allowed interrupt) 
+         XX May not be valid since the effect I am looking for is part of the spectrum that will contribute greatly to the spectra separation, so this might bias the results
+            Try to find a way to ensure the sleep scoring is unbiased
+                *** could only do this with WT animals and then apply velocity thresh to all
+                *** ideally I'd vary velocity and test on Fisher et al dataset to find ideal velocity
+    - Manually inspect sleep scoring (maybe feed data into python and display with video file or convert video to mp4 & do in matlab)
+        * Display video, smoothed velocity, position dot/state indicator, FFT spectrum for 10sec around point (definitely downsample frames so this is possible)
+    - Display number or points in boxplot & number of outliers, & ttest means & p-values
+
+
+Better Oscillation Detection - BOSC
+
+For each state plot change in delta from sleep -> ketamine & sleep -> saline
