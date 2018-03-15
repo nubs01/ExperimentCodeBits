@@ -10,5 +10,9 @@ function out = mergeEpisodes(epTimes,allowedGap)
     C = C{2};
     out = epTimes;
     out(C(:,1),2) = out(C(:,2)+1,2);
-    out(C(:,2)+1,:) = [];
+    rmv = [];
+    for k=1:size(C,1)
+        rmv = [rmv C(k,1)+1:C(k,2)+1];
+    end
+    out(rmv,:) = [];
 

@@ -46,7 +46,7 @@ function fh = plotAllStateSpectra(varargin)
     % Z-score spectra along each frequency
     %spectra = zscore(spectra);
 
-    imagesc(freq,1:size(spectra,1),spectra)
+    imagesc(freq,1:size(spectra,1),10*log10(spectra))
     set(gca,'YDir','normal')
     cb = colorbar;
     colormap('jet');
@@ -76,7 +76,7 @@ function fh = plotAllStateSpectra(varargin)
     [yticks,sIdx] = sort(yticks);
     yticklabels = yticklabels(sIdx);
     set(gca,'YTick',yticks,'YTickLabel',yticklabels,'YTickLabelRotation',90)
-    ylabel(cb,'Power')
+    ylabel(cb,'Power (dB/Hz)')
 
 
   
